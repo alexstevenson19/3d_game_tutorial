@@ -51,10 +51,26 @@ class GameViewController: UIViewController {
     func createTarget() {
         //will use standard objects in SceneKit as targets here
         let geometry:SCNGeometry = SCNPyramid(width: 1, height: 1, length: 1) //make pyramid
-        geometry.materials.first?.diffuse.contents = UIColor.red //just like changing button colors
+        let randomColor = arc4random_uniform(2) == 0 ? UIColor.green : UIColor.red //upper bound of 2 things in the random, if it is equal to 0, choose green, otherwise choose red. Upper bound is basically a maximum in this case
+        geometry.materials.first?.diffuse.contents = randomColor
+//        geometry.materials.first?.diffuse.contents = UIColor.blue //just like changing button colors
         
         let geometryNode = SCNNode(geometry: geometry) //making a node for it in order to actually make the object, then passing the geometry pyramid as argument to better clarify what we want to make
-        gameScene.rootNode.addChildNode(geometryNode)        
+        
+        geometryNode.physicsBody = SCNPhysicsBody(type: .dynamic, shape: nil) //3 types of bodies, the dynamic option is moving and responds to forces. Choosing nil for the shape makes it fit to whatever we defined the createTarget to be.
+        
+        if randomColor == UIColor.red{
+            geometryNode.name = "enemy"
+        } else{
+            geometryNode.name = "friend"
+        }
+
+        gameScene.rootNode.addChildNode(geometryNode)
+        
+        let randomDirection:Float = arc4random_uniform(2) == 0 ? -1.0 : 1.0 //randomly move left or right
+        let force = SCNVector3(x: randomDirection, y: 15, z:0 ) //adding force in 3 dimensions for our 3d pyramid; use random direction constant we just made to make the shapes move left or right
+        
+        geometryNode.physicsBody?.applyForce(force, at: SCNVector3(x: 0.05,y: 0.05, z:0.05 ), asImpulse: true) //applying force slightly off center for our object
     }
 
 
