@@ -24,6 +24,7 @@ class GameViewController: UIViewController {
         initView()
         initScene()
         initCamera()
+        createTarget()
 
     }
     
@@ -45,6 +46,15 @@ class GameViewController: UIViewController {
         cameraNode = SCNNode() //initialize the cam
         cameraNode.camera = SCNCamera() //tell it what to treat camera as
         cameraNode.position = SCNVector3(x: 0, y:5, z:10) //position camera in 3d Space
+    }
+
+    func createTarget() {
+        //will use standard objects in SceneKit as targets here
+        let geometry:SCNGeometry = SCNPyramid(width: 1, height: 1, length: 1) //make pyramid
+        geometry.materials.first?.diffuse.contents = UIColor.red //just like changing button colors
+        
+        let geometryNode = SCNNode(geometry: geometry) //making a node for it in order to actually make the object, then passing the geometry pyramid as argument to better clarify what we want to make
+        gameScene.rootNode.addChildNode(geometryNode)        
     }
 
 
