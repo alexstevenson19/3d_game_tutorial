@@ -10,7 +10,7 @@ import UIKit
 import QuartzCore
 import SceneKit
 
-class GameViewController: UIViewController {
+class GameViewController: UIViewController, SCNSceneRendererDelegate {
 
     var gameView:SCNView!
     var gameScene:SCNScene!
@@ -24,13 +24,15 @@ class GameViewController: UIViewController {
         initView()
         initScene()
         initCamera()
-        createTarget()
+//        createTarget()
 
     }
     
     func initView() {
         gameView = self.view as! SCNView //casting this to a view so we can work with it
         gameView.allowsCameraControl = true //allows us to manipulate the camera gameView.autoenablesDefaultLighting = true //lights are hard, just set to default
+        gameView.autoenablesDefaultLighting = true
+        gameView.delegate = self
     }
 
     
@@ -73,6 +75,12 @@ class GameViewController: UIViewController {
         geometryNode.physicsBody?.applyForce(force, at: SCNVector3(x: 0.05,y: 0.05, z:0.05 ), asImpulse: true) //applying force slightly off center for our object
     }
 
+    func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
+        if time > targetCreationTime {
+            createTarget() //call createTarget func if time greater than targetCreationTime var we made
+            targetCreationTime = time + 0.6 //operation to differentiate/update time and target time
+        }
+    }
 
     @objc
     
