@@ -48,6 +48,7 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate {
         cameraNode = SCNNode() //initialize the cam
         cameraNode.camera = SCNCamera() //tell it what to treat camera as
         cameraNode.position = SCNVector3(x: 0, y:5, z:10) //position camera in 3d Space
+        gameScene.rootNode.addChildNode(cameraNode) //using our camera in the scene
     }
 
     func createTarget() {
@@ -79,6 +80,16 @@ class GameViewController: UIViewController, SCNSceneRendererDelegate {
         if time > targetCreationTime {
             createTarget() //call createTarget func if time greater than targetCreationTime var we made
             targetCreationTime = time + 0.6 //operation to differentiate/update time and target time
+        }
+        
+        cleanUp()
+    }
+
+    func cleanUp () {
+        for node in gameScene.rootNode.childNodes {
+            if node.presentation.position.y < -2 {
+                node.removeFromParentNode() //basically when an object falls below a point it deletes
+            }
         }
     }
 
